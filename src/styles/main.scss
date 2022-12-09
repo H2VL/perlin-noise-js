@@ -1,0 +1,13 @@
+@import 'reset.scss';
+
+.wrapper {
+  min-height: 100vh;
+  header {
+    padding: 2rem 3rem;
+  }
+  footer {
+    height: 50px;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
