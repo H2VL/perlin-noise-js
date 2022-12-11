@@ -3,6 +3,9 @@
 .wrapper {
   min-height: 100vh;
   padding: 2rem 3rem;
+  body {
+    margin: 0;
+  }
   header {
     padding-bottom: 3rem;
   }
