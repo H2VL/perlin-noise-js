@@ -16,9 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-
+ 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
@@ -26,6 +24,7 @@ jobs:
 
     - name: Build
       run: |
-        yarn config set registry @vlaude-team-dev:registry=https://npm.pkg.github.com
+        echo "//npm.pkg.github.com/:_authToken=${{ secrets.PERSONNAL_ACCESS_TOKEN }}" > .npmrc
+        echo "@vlaude-team-dev:registry=https://npm.pkg.github.com" >> .npmrc
         yarn install
         yarn build
