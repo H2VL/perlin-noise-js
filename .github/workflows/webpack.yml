@@ -24,5 +24,6 @@ jobs:
 
     - name: Build
       run: |
+        yarn config set registry @vlaude-team-dev:registry=https://npm.pkg.github.com
         yarn install
         yarn build
