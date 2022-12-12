@@ -28,5 +28,8 @@
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1"
   },
-  "prettier": "@vlaude-team-dev/prettier-config"
+  "prettier": "@vlaude-team-dev/prettier-config",
+  "dependencies": {
+    "stats.js": "^0.17.0"
+  }
 }

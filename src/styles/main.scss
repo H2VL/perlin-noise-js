@@ -1,17 +1,28 @@
 @import 'reset.scss';
 
+body {
+  margin: 0;
+}
 .wrapper {
+  display: grid;
+  grid-template-columns: 500px 1fr;
   min-height: 100vh;
-  padding: 2rem 3rem;
-  body {
-    margin: 0;
-  }
-  header {
-    padding-bottom: 3rem;
-  }
-  footer {
-    height: 50px;
-    display: flex;
-    justify-content: flex-end;
+
+  #config {
+    padding: 2rem;
+    height: 100%;
+
+    #form-container {
+      display: flex;
+      flex-direction: column;
+      row-gap: 1rem;
+      padding: 2rem 0;
+    }
+
+    #generate-world-btn {
+      padding: 0.5rem;
+      font-size: 16px;
+      cursor: pointer;
+    }
   }
 }
