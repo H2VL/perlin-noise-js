@@ -9,6 +9,9 @@
     "dev": "npm-run-all -p dev:*",
     "build": "cross-env NODE_ENV=production webpack"
   },
+  "dependencies": {
+    "stats.js": "^0.17.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.20.5",
     "@babel/preset-env": "^7.20.2",
@@ -28,8 +31,5 @@
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1"
   },
-  "prettier": "@vlaude-team-dev/prettier-config",
-  "dependencies": {
-    "stats.js": "^0.17.0"
-  }
+  "prettier": "@vlaude-team-dev/prettier-config"
 }

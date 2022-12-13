@@ -14,41 +14,44 @@ let gridSize = 4;
 let resolution = 32;
 let numPixels = gridSize / resolution;
 let perlinNoiseIntensity = 50;
-// let colorScale = 250;
+const COLOR_SCALE = 250;
 let minLayer;
 let maxLayer;
 let waterLayer = 20;
 let snowLayer = 50;
 
+let perlinNoise;
 let grid = [];
 
 // input configs
+// grid size
 const gridSizeInput = document.getElementById('grid-size-input');
 gridSizeInput.value = gridSize;
 gridSizeInput.addEventListener('change', (e) => {
   gridSize = Number(e.target.value);
   numPixels = gridSize / resolution;
 });
-
+// resolution
 const resolutionInput = document.getElementById('resolution-input');
 resolutionInput.value = resolution;
 resolutionInput.addEventListener('change', (e) => {
   resolution = Number(e.target.value);
   numPixels = gridSize / resolution;
+  pixel_size = canvas.width / resolution;
 });
-
+// perlin noise intensity
 const perlinNoiseIntensityInput = document.getElementById('perlin-noise-intensity-input');
 perlinNoiseIntensityInput.value = perlinNoiseIntensity;
 perlinNoiseIntensityInput.addEventListener('change', (e) => {
   perlinNoiseIntensity = Number(e.target.value);
 });
-
+// water layer
 const waterLayerInput = document.getElementById('water-layer-input');
 waterLayerInput.value = waterLayer;
 waterLayerInput.addEventListener('change', (e) => {
   waterLayer = Number(e.target.value);
 });
-
+// snow layer
 const snowLayerInput = document.getElementById('snow-layer-input');
 snowLayerInput.value = snowLayer;
 snowLayerInput.addEventListener('change', (e) => {
@@ -56,6 +59,13 @@ snowLayerInput.addEventListener('change', (e) => {
 });
 
 const threejsWrapper = document.getElementById('threejs');
+const canvas = document.getElementById('myCanvas');
+canvas.width = canvas.height = 500 - 14 * 4; // minus 2rem padding on each side
+let pixel_size = canvas.width / resolution;
+const ctx = canvas.getContext('2d');
+// flip the canvas to match the 3d world from top view
+ctx.translate(canvas.width, 0);
+ctx.scale(-1, 1);
 
 let scene;
 let camera;
@@ -67,19 +77,10 @@ let renderer;
 const blockGeometry = new THREE.BoxGeometry(1, 1, 1);
 
 // materials
-const stoneMaterial = new THREE.MeshPhongMaterial({ color: 'grey' });
 const grassMaterial = new THREE.MeshPhongMaterial({ color: 'green' });
 const dirtMaterial = new THREE.MeshPhongMaterial({ color: 0x795548 });
 const waterMaterial = new THREE.MeshPhongMaterial({ color: 'blue' });
 const snowMaterial = new THREE.MeshPhongMaterial({ color: 'white' });
-
-// var canvas = document.getElementById('myCanvas');
-// canvas.width = canvas.height = 512;
-// var ctx = canvas.getContext('2d');
-// let pixel_size = canvas.width / RESOLUTION;
-// let v = perlinNoise.perlin(x, y) * COLOR_SCALE;
-// ctx.fillStyle = 'hsl(' + v + ',50%,50%)';
-// ctx.fillRect((x / GRID_SIZE) * canvas.width, (y / GRID_SIZE) * canvas.height, pixel_size, pixel_size);
 
 const clearScene = () => {
   let i = 0;
@@ -93,14 +94,19 @@ const clearScene = () => {
 };
 
 const generateGrid = () => {
+  perlinNoise = new PerlinNoise();
   grid = [];
-  const perlinNoise = new PerlinNoise();
 
   for (let y = 0; y < gridSize; y += numPixels / gridSize) {
     const row = [];
     for (let x = 0; x < gridSize; x += numPixels / gridSize) {
-      const value = Math.floor(perlinNoise.perlin(x, y) * perlinNoiseIntensity);
+      const perlin = perlinNoise.perlin(x, y);
+      const value = Math.floor(perlin * perlinNoiseIntensity);
       row.push(value);
+
+      const v = perlin * COLOR_SCALE;
+      ctx.fillStyle = 'hsl(' + v + ',50%,50%)';
+      ctx.fillRect((x / gridSize) * canvas.width, (y / gridSize) * canvas.height, pixel_size, pixel_size);
     }
     grid.push(row);
   }
@@ -126,6 +132,7 @@ const draw3DWorld = () => {
 
       // let geometry = new THREE.BoxGeometry(1, row[j], 1);
       const cube = new THREE.Mesh(blockGeometry, material);
+      cube.matrixAutoUpdate = false;
 
       cube.position.x = i;
       cube.position.z = j;
@@ -138,6 +145,8 @@ const draw3DWorld = () => {
 
       cube.receiveShadow = true;
       cube.castShadow = true;
+
+      cube.updateMatrix();
 
       scene.add(cube);
     }
@@ -164,7 +173,12 @@ generateGrid();
 draw3DWorld();
 
 // renderer
-renderer = new THREE.WebGLRenderer({ antialias: false });
+renderer = new THREE.WebGLRenderer({
+  antialias: false,
+  preserveDrawingBuffer: false,
+  alpha: false,
+  powerPreference: 'high-performance',
+});
 renderer.setSize(threejsWrapper.offsetWidth, threejsWrapper.offsetHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.BasicShadowMap;
@@ -180,6 +194,7 @@ camera.updateProjectionMatrix();
 const controls = new OrbitControls(camera, renderer.domElement);
 //controls.update() must be called after any manual changes to the camera's transform
 controls.update();
+// controls.addEventListener('change', () => renderer.render(scene, camera));
 
 function animate() {
   stats.begin();
@@ -188,7 +203,7 @@ function animate() {
   controls.update();
   renderer.render(scene, camera);
 
-  console.log('Number of Triangles :', renderer.info.render.triangles);
+  // console.log('Number of Triangles :', renderer.info.render.triangles);
   // console.log('Number of Geometries :', renderer.info.memory.geometries);
 
   stats.end();
