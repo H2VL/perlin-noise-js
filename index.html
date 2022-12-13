@@ -5,35 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Minecraft JS</title>
+    <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet" />
     <link rel="stylesheet" href="./assets/styles/main.css" />
   </head>
   <body>
-    <div class="wrapper">
-      <div id="config">
-        <h1>MinecraftJS</h1>
-        <div id="form-container">
+    <div class="main-container">
+      <div class="left-container">
+        <div id="config">
           <div>
-            <label for="grid-size-input">Grid Size</label>
-            <input id="grid-size-input" type="number" step="1" min="1" max="30" />
+            <h1>MinecraftJS</h1>
+            <p>
+              Generate your own <i>Minecraft like</i> world (only landform like mountains, hills, rivers etc.) with the
+              Perlin Noise
+            </p>
           </div>
-          <div>
-            <label for="resolution-input">Resolution</label>
-            <input id="resolution-input" type="number" step="1" min="1" max="128" />
+          <div id="form-container">
+            <!-- grid size -->
+            <div class="form-field">
+              <label for="grid-size-input">Grid Size</label>
+              <input id="grid-size-input" type="number" step="1" min="1" max="30" />
+            </div>
+            <!-- resolution -->
+            <div class="form-field">
+              <label for="resolution-input">Resolution</label>
+              <input id="resolution-input" type="number" step="1" min="1" max="128" />
+            </div>
+            <p class="info-msg">
+              A too high grid size and/or resolution may impact your browser performance or make it crash
+            </p>
+            <!-- perlin noise intensity -->
+            <div class="form-field">
+              <label for="perlin-noise-intensity-input">Perlin Noise Intensity</label>
+              <input id="perlin-noise-intensity-input" type="number" step="5" min="1" max="200" />
+            </div>
+            <!-- water layer -->
+            <div class="form-field">
+              <label for="water-layer-input">Water Layer</label>
+              <input id="water-layer-input" type="number" step="5" min="1" />
+            </div>
+            <!-- water layer -->
+            <div class="form-field">
+              <label for="snow-layer-input">Snow Layer</label>
+              <input id="snow-layer-input" type="number" step="5" min="1" />
+            </div>
           </div>
-          <div>
-            <label for="perlin-noise-intensity-input">Perlin Noise Intensity</label>
-            <input id="perlin-noise-intensity-input" type="number" step="1" min="1" max="200" />
-          </div>
-          <div>
-            <label for="water-layer-input">Water Layer</label>
-            <input id="water-layer-input" type="number" step="1" min="1" />
-          </div>
-          <div>
-            <label for="snow-layer-input">Snow Layer</label>
-            <input id="snow-layer-input" type="number" step="1" min="1" />
-          </div>
+          <button id="generate-world-btn">Generate World</button>
         </div>
-        <button id="generate-world-btn">Generate World</button>
+        <div>
+          <!-- gradient colors perlin noise -->
+          <h2 style="margin-bottom: 1rem; font-size: 1.6rem">Perlin Noise generated</h2>
+          <canvas id="myCanvas"></canvas>
+        </div>
+        <p style="text-align: right">
+          Check the <a href="https://github.com/vlaude-Team-Dev/perlin-noise-js" target="_blank">github repository</a>
+        </p>
       </div>
       <div id="threejs"></div>
     </div>
